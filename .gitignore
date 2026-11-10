@@ -1,0 +1,11 @@
+# Configurações sensíveis
+includes/config.php
+
+# Pastas de mídia
+uploads/*
+!uploads/default.png
+!uploads/logo.png
+
+.env
+
+database.sql
