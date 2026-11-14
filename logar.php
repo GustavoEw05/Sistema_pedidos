@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $stmt = $pdo->prepare("SELECT id, nome, senha, nivel FROM usuarios WHERE nome = ?");
+    $stmt = $pdo->prepare("SELECT id, nome, senha, nivel, primeiro_acesso FROM usuarios WHERE nome = ?");
     $stmt->execute([$nome]);
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -53,10 +53,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Regenera a sessão para proteção total contra session fixation
         session_regenerate_id(true);
 
+        $primeiroAcesso = filter_var($usuario['primeiro_acesso'] ?? false, FILTER_VALIDATE_BOOLEAN);
+
         $_SESSION['usuario_id'] = (int)$usuario['id'];
         $_SESSION['usuario_nome'] = (string)$usuario['nome'];
         $_SESSION['usuario_nivel'] = (string)$usuario['nivel'];
+        $_SESSION['primeiro_acesso'] = $primeiroAcesso;
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
+        // Se for o primeiro acesso, força a troca de senha obrigatória
+        if ($primeiroAcesso) {
+            header("Location: trocar_senha.php");
+            exit;
+        }
 
         // Redireciona de acordo com o nível de acesso
         if ($usuario['nivel'] === 'admin') {

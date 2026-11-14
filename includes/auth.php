@@ -32,6 +32,15 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
+// 4. Bloqueio Mandatório de Primeiro Acesso (Troca de Senha Obrigatória)
+$scriptAtual = basename($_SERVER['PHP_SELF'] ?? '');
+if (!empty($_SESSION['primeiro_acesso']) && !in_array($scriptAtual, ['trocar_senha.php', 'logout.php'], true)) {
+    $isSubpasta = str_contains($_SERVER['PHP_SELF'] ?? '', '/admin/') || str_contains($_SERVER['PHP_SELF'] ?? '', '/revendedor/');
+    $prefixo = $isSubpasta ? '../' : '';
+    header("Location: " . $prefixo . "trocar_senha.php");
+    exit;
+}
+
 /**
  * Verifica se o usuário autenticado possui o nível de acesso necessário.
  *

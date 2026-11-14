@@ -3,8 +3,12 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start(); 
 }
 
-// Se o usuário já estiver logado, redireciona para o painel correto
+// Se o usuário já estiver logado, redireciona para o painel correto ou tela de troca de senha
 if (isset($_SESSION['usuario_id']) && isset($_SESSION['usuario_nivel'])) {
+    if (!empty($_SESSION['primeiro_acesso'])) {
+        header("Location: trocar_senha.php");
+        exit;
+    }
     if ($_SESSION['usuario_nivel'] === 'admin') {
         header("Location: admin/dashboard.php");
         exit;

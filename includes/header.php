@@ -73,7 +73,39 @@ $prefixoCaminho = $isNaRaiz ? '' : '../';
 </head>
 <body class="bg-slate-50 font-sans text-gray-800 antialiased min-h-full flex flex-col selection:bg-secundaria selection:text-primaria">
 
-<?php if (isset($_SESSION['usuario_id'])): ?>
+<?php 
+$isTrocaSenha = (!empty($_SESSION['primeiro_acesso']) || $paginaAtual === 'trocar_senha.php');
+if (isset($_SESSION['usuario_id'])): 
+    if ($isTrocaSenha):
+?>
+<nav class="bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 sticky top-0 z-50 transition-all duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <div class="flex items-center gap-3">
+                <img src="<?= $prefixoCaminho ?>uploads/logo.png" 
+                     alt="Logo" 
+                     class="h-9 sm:h-10 w-auto object-contain" 
+                     onerror="this.onerror=null; this.src='https://placehold.co/150x50?text=Sua+Logo';">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200/60">
+                    <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-amber-600"></i> Primeiro Acesso
+                </span>
+            </div>
+            <div class="flex items-center gap-3 sm:gap-4">
+                <?php if (isset($_SESSION['usuario_nome'])): ?>
+                    <span class="text-xs font-semibold text-gray-600 hidden sm:inline-block">
+                        Conectado como <strong class="text-gray-900"><?= htmlspecialchars($_SESSION['usuario_nome']) ?></strong>
+                    </span>
+                <?php endif; ?>
+                <a href="<?= $prefixoCaminho ?>logout.php" 
+                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 transition focus:outline-none focus:ring-2 focus:ring-red-400/20 active:scale-95">
+                    <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                    <span>Sair</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+<?php else: ?>
 <nav x-data="{ open: false, notifOpen: false }" class="bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 sticky top-0 z-50 transition-all duration-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16 items-center">
@@ -287,7 +319,9 @@ $prefixoCaminho = $isNaRaiz ? '' : '../';
     </div>
 </nav>
 <?php endif; ?>
+<?php endif; ?>
 
+<?php if (isset($_SESSION['usuario_id']) && !$isTrocaSenha): ?>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     if (typeof lucide !== 'undefined') {
@@ -357,6 +391,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setInterval(carregarNotificacoes, 20000);
 });
 </script>
+<?php endif; ?>
 
 <!-- Container principal flexível com min-h responsivo -->
 <main class="flex-1 w-full">

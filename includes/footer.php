@@ -38,6 +38,10 @@
             };
 
             switch (tipo) {
+                case 'senha_alterada':
+                    config.title = 'Senha Atualizada com Sucesso!';
+                    config.text = 'Sua nova senha foi cadastrada e protegida. Seja bem-vindo(a)!';
+                    break;
                 case 'pedido_criado':
                 case 'criado':
                     config.title = 'Pedido Realizado!';
